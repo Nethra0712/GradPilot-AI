@@ -1,0 +1,24 @@
+{
+  "name": "gradpilot-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GradPilot AI — AI-powered University Application Assistant",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "setup": "npm install && npm run db:generate -w server",
+    "dev": "concurrently \"npm run dev -w client\" \"npm run dev -w server\"",
+    "build": "npm run build -w client && npm run build -w server",
+    "lint": "npm run lint -w client && npm run lint -w server",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md}\" \"!**/node_modules/**\" \"!**/dist/**\" \"!**/.vite/**\"",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.2"
+  }
+}

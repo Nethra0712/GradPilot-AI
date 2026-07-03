@@ -33,7 +33,7 @@ Common traits: English is often a second language, budget-conscious ($0–$500 f
 24, working professional in Shanghai applying to MBA programs in the UK and Singapore. Time-poor, values structure and speed. Willing to pay for a premium/pro tier if it visibly improves quality and saves hours.
 
 **Persona 3 — "First-Gen Fatima" (Underserved)**
-19, first in her family to apply abroad (Pakistan → Canada, undergraduate). No access to a counselor. Needs heavy guidance, not just a text generator — wants to know *what* a good SOP even contains.
+19, first in her family to apply abroad (Pakistan → Canada, undergraduate). No access to a counselor. Needs heavy guidance, not just a text generator — wants to know _what_ a good SOP even contains.
 
 **Persona 4 — "Consultant Priya" (Future/B2B2C)**
 32, runs a small study-abroad consultancy handling 40+ students/year. Wants a tool to speed up her own workflow and manage multiple client SOPs at once.
@@ -44,20 +44,20 @@ Common traits: English is often a second language, budget-conscious ($0–$500 f
 2. **Generic AI output** — ChatGPT/QuillBot produce essays that sound the same across thousands of users, risking detection and rejection.
 3. **Cost of human consultants** — professional SOP editing/consulting costs $100–$1,000+ per application, unaffordable at scale (especially across 5–10 applications).
 4. **Language and tone gaps** — non-native English speakers struggle with idiomatic, persuasive academic tone without sounding unnatural or "over-polished."
-5. **Program-specific customization** — students need a *different* SOP tone/content per university and program, which is tedious to redo manually.
+5. **Program-specific customization** — students need a _different_ SOP tone/content per university and program, which is tedious to redo manually.
 6. **Lack of feedback loops** — students don't know if their SOP is actually strong; no scoring or benchmarking exists today.
 
 ## 6. Competitor Analysis
 
-| Competitor | What They Do | Strengths | Weaknesses (Our Opportunity) |
-|---|---|---|---|
-| **ChatGPT (general)** | General-purpose LLM chat | Free/cheap, flexible, powerful reasoning | Not admissions-specific; no structured SOP framework; no plagiarism/AI-detection safety; generic, repetitive prose; no program/university context; no version history or scoring |
-| **Grammarly** | Grammar, tone, and clarity checking | Excellent grammar/style engine, trusted brand | Doesn't *generate* content or SOP structure; no admissions expertise; not built for narrative storytelling |
-| **QuillBot** | Paraphrasing, summarizing, grammar | Good for rewriting sentences | No holistic SOP strategy; paraphrased content often reads awkwardly; no domain-specific admissions knowledge |
-| **Generic "SOP writing services"** (freelancers, agencies) | Human-written SOPs | High quality when good, personalized | Expensive, slow (days), inconsistent quality, not scalable, no transparency into process |
-| **University-specific counselors** | 1:1 human guidance | Deep trust, personalized | Very expensive, limited availability, not accessible to most students globally |
+| Competitor                                                 | What They Do                        | Strengths                                     | Weaknesses (Our Opportunity)                                                                                                                                                     |
+| ---------------------------------------------------------- | ----------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ChatGPT (general)**                                      | General-purpose LLM chat            | Free/cheap, flexible, powerful reasoning      | Not admissions-specific; no structured SOP framework; no plagiarism/AI-detection safety; generic, repetitive prose; no program/university context; no version history or scoring |
+| **Grammarly**                                              | Grammar, tone, and clarity checking | Excellent grammar/style engine, trusted brand | Doesn't _generate_ content or SOP structure; no admissions expertise; not built for narrative storytelling                                                                       |
+| **QuillBot**                                               | Paraphrasing, summarizing, grammar  | Good for rewriting sentences                  | No holistic SOP strategy; paraphrased content often reads awkwardly; no domain-specific admissions knowledge                                                                     |
+| **Generic "SOP writing services"** (freelancers, agencies) | Human-written SOPs                  | High quality when good, personalized          | Expensive, slow (days), inconsistent quality, not scalable, no transparency into process                                                                                         |
+| **University-specific counselors**                         | 1:1 human guidance                  | Deep trust, personalized                      | Very expensive, limited availability, not accessible to most students globally                                                                                                   |
 
-**Our opportunity:** No existing player combines (a) admissions-specific SOP structure and best practices, (b) AI generation tuned to *avoid* generic/robotic output, (c) program/university-aware customization, and (d) an accessible price point for students in emerging markets.
+**Our opportunity:** No existing player combines (a) admissions-specific SOP structure and best practices, (b) AI generation tuned to _avoid_ generic/robotic output, (c) program/university-aware customization, and (d) an accessible price point for students in emerging markets.
 
 ## 7. Unique Value Proposition
 
@@ -73,6 +73,7 @@ Common traits: English is often a second language, budget-conscious ($0–$500 f
 ## 8. MVP Scope
 
 **In scope for MVP:**
+
 - User authentication and profile creation (academic background, target programs, universities)
 - Guided intake questionnaire (background, achievements, motivations, goals, target program)
 - AI-powered SOP generation engine (first draft based on intake + guided prompts)
@@ -84,6 +85,7 @@ Common traits: English is often a second language, budget-conscious ($0–$500 f
 - Basic account and billing management
 
 **Explicitly out of scope for MVP (future roadmap):**
+
 - Recommendation letter generation
 - Full application tracker (deadlines, document checklist across universities)
 - University/program discovery and matching
@@ -96,18 +98,21 @@ Common traits: English is often a second language, budget-conscious ($0–$500 f
 ## 9. Future Roadmap
 
 **Phase 2 (Post-MVP, 0–6 months after launch)**
+
 - Letter of Recommendation (LOR) assistant
 - Application tracker with deadline reminders
 - University/program database with AI-matching ("Where should I apply?")
 - Multi-language intake support
 
 **Phase 3 (6–12 months)**
+
 - Interview preparation module (mock interviews, common questions by program)
 - Scholarship and financial aid guidance
 - Consultant/agency B2B2C dashboard (multi-student management)
 - Peer/mentor review marketplace
 
 **Phase 4 (12+ months)**
+
 - Visa application document assistance
 - Post-admission support (housing, pre-departure guidance)
 - Native mobile apps (iOS/Android)
@@ -196,13 +201,13 @@ Common traits: English is often a second language, budget-conscious ($0–$500 f
 
 ## 16. Subscription Model
 
-| Tier | Price (indicative) | Generations / Month | Universities/Applications | Export | Key Features |
-|---|---|---|---|---|---|
-| **Free** | $0 | 1 full SOP generation, limited regenerations | 1 active application | Watermarked PDF export | Basic quality score, core editor |
-| **Premium** | ~$9–15/mo or per-cycle pass | Generous monthly generation allowance (e.g., 15) | Up to 5 active applications | Unwatermarked PDF & DOCX | Full quality scoring, tone controls, version history |
-| **Pro** | ~$25–35/mo or per-cycle pass | High/near-unlimited generations | Unlimited applications | All export formats | Priority AI speed, advanced originality analysis, priority support |
+| Tier        | Price (indicative)           | Generations / Month                              | Universities/Applications   | Export                   | Key Features                                                       |
+| ----------- | ---------------------------- | ------------------------------------------------ | --------------------------- | ------------------------ | ------------------------------------------------------------------ |
+| **Free**    | $0                           | 1 full SOP generation, limited regenerations     | 1 active application        | Watermarked PDF export   | Basic quality score, core editor                                   |
+| **Premium** | ~$9–15/mo or per-cycle pass  | Generous monthly generation allowance (e.g., 15) | Up to 5 active applications | Unwatermarked PDF & DOCX | Full quality scoring, tone controls, version history               |
+| **Pro**     | ~$25–35/mo or per-cycle pass | High/near-unlimited generations                  | Unlimited applications      | All export formats       | Priority AI speed, advanced originality analysis, priority support |
 
-*Pricing shown is indicative and subject to market validation; final pricing to be confirmed via willingness-to-pay research per target geography (purchasing power varies significantly, e.g., India/Nigeria vs. US/UK students).*
+_Pricing shown is indicative and subject to market validation; final pricing to be confirmed via willingness-to-pay research per target geography (purchasing power varies significantly, e.g., India/Nigeria vs. US/UK students)._
 
 Application-cycle passes (e.g., a one-time payment covering a 2–3 month admissions season) should be tested alongside monthly subscriptions, since students' usage is highly seasonal.
 
@@ -241,28 +246,34 @@ Application-cycle passes (e.g., a one-time payment covering a 2–3 month admiss
 ## 20. Success Metrics
 
 **Activation**
+
 - % of sign-ups who complete profile + generate at least 1 SOP draft (target: >60%)
 - Time-to-first-generated-draft (target: <10 minutes from sign-up)
 
 **Engagement**
+
 - Average SOPs created per active user per application cycle
 - Regeneration/edit interactions per SOP (signal of active refinement, not passive one-shot use)
 
 **Monetization**
+
 - Free-to-paid conversion rate (target: 8–15% typical for freemium SaaS)
 - Average revenue per user (ARPU) by tier
 - Application-cycle pass vs. subscription mix
 
 **Retention**
+
 - Month-over-month retention within an admissions cycle
 - Cross-cycle return rate (student returns next application season, or refers peers)
 
 **Quality/Trust**
+
 - Average AI-generated SOP quality score
 - % of exported SOPs marked "Final" (proxy for perceived quality/usability)
 - Support ticket volume related to output quality or originality concerns
 
 **Business/Scale Readiness**
+
 - AI generation cost per user vs. revenue per user (unit economics)
 - System uptime and generation latency at scale (100K+ user readiness)
 - Net Promoter Score (NPS) among active users
@@ -274,6 +285,7 @@ Application-cycle passes (e.g., a one-time payment covering a 2–3 month admiss
 Pending your approval of this PRD, the next phase will cover **Software Architecture** — system design, tech stack recommendations, AI provider/model strategy, infrastructure, API design, and data flow diagrams — building directly on the scope defined above.
 
 **Please review and confirm:**
+
 1. Are the MVP scope boundaries (Section 8) correct, or should anything move in/out?
 2. Does the subscription pricing structure (Section 16) align with your target market strategy?
 3. Any personas, competitors, or roadmap items missing?

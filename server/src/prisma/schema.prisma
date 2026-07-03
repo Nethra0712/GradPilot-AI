@@ -1,0 +1,15 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Minimal placeholder model to allow Prisma Client generation to succeed.
+// No real application tables/schemas are defined in this milestone.
+model Placeholder {
+  id String @id
+}
