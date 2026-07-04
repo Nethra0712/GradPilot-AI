@@ -35,7 +35,7 @@ export function errorMiddleware(
   }
 
   // Catch-all for unhandled system exceptions (log stack trace, hide in production)
-  logger.error(`System Error [${req.method} ${req.path}]:`, err);
+  logger.error(err, `System Error [${req.method} ${req.path}]`);
 
   const responseBody = {
     status: 'error',

@@ -8,8 +8,131 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Minimal placeholder model to allow Prisma Client generation to succeed.
-// No real application tables/schemas are defined in this milestone.
-model Placeholder {
-  id String @id
+// ─── ENUMS ─────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+}
+
+enum DocumentType {
+  SOP
+  PERSONAL_STATEMENT
+  CV
+  RESEARCH_PROPOSAL
+  SCHOLARSHIP_ESSAY
+  EMAIL_PROFESSOR
+}
+
+enum DocumentStatus {
+  DRAFT
+  FINAL
+}
+
+// ─── MODELS ────────────────────────────────────────────────────────────────────
+
+model User {
+  id               String           @id @default(uuid()) @db.Uuid
+  email            String           @unique
+  password         String?
+  authProvider     String           @default("local") // "local" | "google"
+  fullName         String
+  role             UserRole         @default(USER)
+  subscriptionTier SubscriptionPlan @default(FREE)
+  emailVerifiedAt  DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  // Relations
+  profile       Profile?
+  documents     Document[]
+  aiGenerations AIGeneration[]
+  subscription  Subscription?
+
+  @@map("users")
+}
+
+model Profile {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @unique @db.Uuid
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  academicBackground String?  @db.Text
+  achievements       Json? // Array of achievements
+  careerGoals        String?  @db.Text
+  targetCountries    Json? // Array of strings
+  targetFields       Json? // Array of strings
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model Document {
+  id           String         @id @default(uuid()) @db.Uuid
+  userId       String         @db.Uuid
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentType DocumentType
+  status       DocumentStatus @default(DRAFT)
+  content      Json? // Structured section-based document content
+  deletedAt    DateTime? // Soft delete support
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relations
+  aiGenerations AIGeneration[]
+
+  // Performance Indexes
+  @@index([userId])
+  @@index([documentType])
+  @@index([createdAt])
+  @@map("documents")
+}
+
+model AIGeneration {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentId String?   @db.Uuid
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  prompt     String    @db.Text
+  response   String    @db.Text
+  tokensUsed Int?
+  provider   String? // "openai" | "anthropic"
+  modelUsed  String? // e.g. "gpt-4o", "claude-3-5-sonnet"
+  createdAt  DateTime  @default(now())
+
+  // Performance Indexes
+  @@index([userId])
+  @@index([createdAt])
+  @@map("ai_generations")
+}
+
+model Subscription {
+  id                     String             @id @default(uuid()) @db.Uuid
+  userId                 String             @unique @db.Uuid
+  user                   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                   SubscriptionPlan   @default(FREE)
+  status                 SubscriptionStatus @default(ACTIVE)
+  billingProvider        String             @default("stripe")
+  stripeCustomerId       String?            @unique
+  stripeSubscriptionId   String?            @unique
+  currentPeriodEnd       DateTime?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  // Implicitly indexed via unique constraint on userId, but explicit indexing matches SDD
+  @@index([userId])
+  @@map("subscriptions")
 }

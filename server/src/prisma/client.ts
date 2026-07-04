@@ -24,7 +24,7 @@ export async function disconnectPrisma(): Promise<void> {
     await prisma.$disconnect();
     logger.info('🔌 Prisma Client disconnected successfully');
   } catch (error) {
-    logger.error('❌ Error disconnecting Prisma Client:', error);
+    logger.error({ error }, 'Error disconnecting Prisma Client');
   }
 }
 export default prisma;
