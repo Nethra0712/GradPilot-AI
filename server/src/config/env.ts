@@ -20,7 +20,7 @@ const envSchema = z.object({
   JWT_ACCESS_SECRET: z.string().default('super-secret-access-token-key-change-me-in-production'),
   JWT_REFRESH_SECRET: z.string().default('super-secret-refresh-token-key-change-me-in-production'),
   JWT_ACCESS_EXPIRY: z.string().default('15m'),
-  JWT_REFRESH_EXPIRY: z.string().default('7d'),
+  JWT_REFRESH_EXPIRY: z.string().default('30d'),
   BCRYPT_SALT_ROUNDS: z.coerce.number().default(12),
 
   // AI configuration

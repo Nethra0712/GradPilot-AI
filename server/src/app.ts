@@ -1,12 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import router from './routes';
 import { errorMiddleware } from './middleware/error.middleware';
 import { env } from './config/env';
 import { logger } from './utils/logger';
 
 const app = express();
+
+app.use(cookieParser());
 
 // Configure helmet for basic security HTTP headers
 app.use(helmet());

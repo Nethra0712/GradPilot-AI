@@ -60,6 +60,7 @@ model User {
   documents     Document[]
   aiGenerations AIGeneration[]
   subscription  Subscription?
+  sessions      Session[]
 
   @@map("users")
 }
@@ -135,4 +136,28 @@ model Subscription {
   // Implicitly indexed via unique constraint on userId, but explicit indexing matches SDD
   @@index([userId])
   @@map("subscriptions")
+}
+
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @db.Uuid
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // bcrypt hash of the raw refresh token — the plain token is NEVER stored
+  refreshTokenHash String
+  // Browser/client identifier forwarded from the User-Agent header
+  userAgent        String?   @db.Text
+  // IP address of the client that created the session, used for anomaly detection
+  ipAddress        String?
+  // Hard expiry timestamp — session is invalid after this point even if not revoked
+  expiresAt        DateTime
+  // Set on logout or on refresh-token reuse detection (token theft signal)
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Fast lookup by userId (most common query: "list all active sessions for user")
+  @@index([userId])
+  // Fast lookup on token refresh path: fetch session by id + check revocation
+  @@index([expiresAt])
+  @@map("sessions")
 }
