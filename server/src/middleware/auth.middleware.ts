@@ -43,6 +43,7 @@ export async function authenticate(
     req.user = {
       id: user.id,
       email: user.email,
+      fullName: user.fullName,
       role: user.role.toString(),
       subscriptionTier: user.subscriptionTier.toString(),
     };
