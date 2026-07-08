@@ -1,4 +1,4 @@
-# GradPilot AI — Project Foundation
+# GradPilot AI
 
 GradPilot AI is an AI-powered university application assistant designed to guide international students through admissions processes, starting with the industry's most advanced Statement of Purpose (SOP) generator.
 
