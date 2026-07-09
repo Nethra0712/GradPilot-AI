@@ -66,16 +66,48 @@ model User {
 }
 
 model Profile {
-  id                 String   @id @default(uuid()) @db.Uuid
-  userId             String   @unique @db.Uuid
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  academicBackground String?  @db.Text
-  achievements       Json? // Array of achievements
-  careerGoals        String?  @db.Text
+  id                 String    @id @default(uuid()) @db.Uuid
+  userId             String    @unique @db.Uuid
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  academicBackground String?   @db.Text
+  achievements       Json? // Array of achievements (backward compatible)
+  careerGoals        String?   @db.Text
   targetCountries    Json? // Array of strings
   targetFields       Json? // Array of strings
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  
+  // Personal
+  dob                DateTime?
+  nationality        String?
+
+  // Education
+  currentEducation   String?
+  institution        String?
+  gpa                String?
+  graduationYear     Int?
+
+  // Target Studies
+  targetDegree       String?
+  targetUniversities Json? // Array of target universities
+
+  // Career
+  dreamJob           String?
+
+  // Experience, Projects, Volunteer & Skills
+  workExperience     Json? // Array of experience details
+  projects           Json? // Array of projects details
+  awards             Json? // Array of awards details
+  activities         Json? // Array of activity details
+  volunteerWork      Json? // Array of volunteer details
+  languages          Json? // Array of language competency details
+  skills             Json? // Array of skills details
+  englishTests       Json? // Array of english test records
+  additionalNotes    String?   @db.Text
+
+  // Soft delete indicator
+  deletedAt          DateTime?
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   @@map("profiles")
 }
@@ -102,17 +134,24 @@ model Document {
 }
 
 model AIGeneration {
-  id         String    @id @default(uuid()) @db.Uuid
-  userId     String    @db.Uuid
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documentId String?   @db.Uuid
-  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  prompt     String    @db.Text
-  response   String    @db.Text
-  tokensUsed Int?
-  provider   String? // "openai" | "anthropic"
-  modelUsed  String? // e.g. "gpt-4o", "claude-3-5-sonnet"
-  createdAt  DateTime  @default(now())
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @db.Uuid
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentId       String?   @db.Uuid
+  document         Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  prompt           String    @db.Text
+  response         String    @db.Text
+  tokensUsed       Int?      // Total tokens
+  provider         String?   // "openai" | "anthropic" | "gemini"
+  modelUsed        String?   // e.g. "gpt-4o", "claude-3-5-sonnet"
+  
+  // Auditing details
+  requestId        String?   // correlation request ID
+  promptTokens     Int?      // estimated prompt tokens
+  completionTokens Int?      // estimated completion tokens
+  latency          Int?      // call latency in milliseconds
+
+  createdAt        DateTime  @default(now())
 
   // Performance Indexes
   @@index([userId])

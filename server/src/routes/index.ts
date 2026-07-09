@@ -2,10 +2,14 @@ import { Router } from 'express';
 import prisma from '../prisma/client';
 import { logger } from '../utils/logger';
 import authRouter from './auth.routes';
+import profileRouter from './profile.routes';
+import aiRouter from './ai.routes';
 
 const router = Router();
 
 router.use('/auth', authRouter);
+router.use('/profile', profileRouter);
+router.use('/ai', aiRouter);
 
 /**
  * GET /api/health

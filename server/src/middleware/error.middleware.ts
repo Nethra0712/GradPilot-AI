@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/apiError';
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
+import { AIError } from '../features/ai/utils/ai.errors';
 
 /**
  * Express error-handling middleware that catches all unhandled or explicit errors
@@ -14,6 +15,19 @@ export function errorMiddleware(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ): Response {
+  if (err instanceof AIError) {
+    logger.warn(
+      `AI Engine Error [${req.method} ${req.path}]: ${err.statusCode} - [${err.code}] ${err.message}`
+    );
+    return res.status(err.statusCode).json({
+      status: 'error',
+      code: err.code,
+      message: err.message,
+      details: err.errors,
+      requestId: err.requestId,
+    });
+  }
+
   if (err instanceof ApiError) {
     logger.warn(
       `Operational Error [${req.method} ${req.path}]: ${err.statusCode} - ${err.message}`

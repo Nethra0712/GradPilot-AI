@@ -1,37 +1,51 @@
+import { profileRepository } from '@/repositories/profile.repository';
 import { CreateProfileInput, UpdateProfileInput } from '@/types/profile.types';
+import { calculateProfileCompletion, CompletionSummary } from '@/utils/profileCompletion';
 import { Profile } from '@prisma/client';
 
 /**
  * ProfileService
  *
  * Business logic layer for the Profile domain.
- * Handles intake questionnaire submissions and profile data retrieval.
- * Profiles drive the personalisation context fed into AI generation prompts.
+ * Orchestrates calls between the HTTP routing layers and repositories,
+ * calculations (profile completion scoring), and soft deletes.
  */
 export class ProfileService {
   /**
    * Get a user's academic profile.
-   * Returns null if the intake questionnaire has never been completed.
+   * Excludes soft-deleted profile rows.
    */
-  async getProfile(_userId: string): Promise<Profile | null> {
-    throw new Error('Not implemented');
+  async getProfile(userId: string): Promise<Profile | null> {
+    return profileRepository.findByUserId(userId);
   }
 
   /**
-   * Save the intake questionnaire for a user.
-   * Creates the profile if it does not exist; updates it if it does.
-   * This is an idempotent operation — re-submitting the form is safe.
+   * Save the academic profile for a user.
+   * Idempotent create-or-update operation.
    */
-  async saveProfile(_data: CreateProfileInput): Promise<Profile> {
-    throw new Error('Not implemented');
+  async saveProfile(data: CreateProfileInput): Promise<Profile> {
+    return profileRepository.upsert(data);
   }
 
   /**
    * Partially update specific profile fields.
-   * Used when the user edits individual sections without re-submitting the full form.
    */
-  async updateProfile(_userId: string, _data: UpdateProfileInput): Promise<Profile> {
-    throw new Error('Not implemented');
+  async updateProfile(userId: string, data: UpdateProfileInput): Promise<Profile> {
+    return profileRepository.update(userId, data);
+  }
+
+  /**
+   * Soft delete a student profile.
+   */
+  async deleteProfile(userId: string): Promise<Profile> {
+    return profileRepository.softDelete(userId);
+  }
+
+  /**
+   * Calculate completeness percentage and details of a profile.
+   */
+  getProfileCompletion(profile: Profile | null): CompletionSummary {
+    return calculateProfileCompletion(profile);
   }
 }
 

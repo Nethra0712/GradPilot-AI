@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useProfile } from '@/features/profile/hooks/useProfile';
+import { calculateProfileCompletion } from '@/features/profile/utils/profileCompletion';
 
 export const DashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
+  const { data: profileData } = useProfile();
 
   // Mock data representing documents for visual state
   const mockDocuments = [
@@ -28,6 +31,9 @@ export const DashboardPage: React.FC = () => {
     { id: 'act-2', text: 'Scored MIT CV draft with AI Reviewer (84/100)', time: '1 day ago' },
     { id: 'act-3', text: 'Created MIT PhD Application Academic CV', time: '2 days ago' },
   ];
+
+  // Calculate completion parameters dynamically
+  const completion = calculateProfileCompletion(profileData?.profile || null);
 
   return (
     <div className="space-y-6 select-none animate-fade-in">
@@ -92,18 +98,39 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Card 3: Saved Profiles */}
+        {/* Card 3: Saved Profiles (Synced with backend via TanStack Query) */}
         <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl flex flex-col justify-between">
           <div>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
-              Application Profile
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                Student Profile
+              </span>
+              <span className="text-[10px] font-semibold text-slate-400">
+                {completion.percentage}%
+              </span>
+            </div>
+            <span
+              className={[
+                'text-xl font-bold font-display',
+                completion.percentage === 100 ? 'text-emerald-400' : 'text-amber-400',
+              ].join(' ')}
+            >
+              {completion.percentage === 100 ? 'Ready' : 'Incomplete'}
             </span>
-            <span className="text-xl font-bold text-emerald-400 font-display">Completed</span>
           </div>
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <span className="text-slate-500">Intake form finished</span>
+          <div className="mt-3 text-[10px] text-slate-500 leading-normal">
+            <p>
+              Completed: {completion.completedSectionsCount}/{completion.totalSectionsCount}{' '}
+              sections
+            </p>
+            <p className="mt-0.5">Updated: {completion.lastUpdated}</p>
+          </div>
+          <div className="mt-4 flex items-center justify-between text-xs pt-2 border-t border-slate-900/50">
+            <span className="text-slate-600 text-[10px]">
+              {completion.remainingSections.length} remaining
+            </span>
             <Link to="/profile" className="text-brand-400 hover:text-brand-300 font-semibold">
-              Edit Details
+              {completion.percentage === 100 ? 'View Details' : 'Continue Profile'}
             </Link>
           </div>
         </div>

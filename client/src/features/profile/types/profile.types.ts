@@ -1,5 +1,3 @@
-import { Profile } from '@prisma/client';
-
 export interface WorkExperienceItem {
   jobTitle: string;
   company: string;
@@ -50,20 +48,29 @@ export interface EnglishTestItem {
   score: string;
 }
 
-// ─── Input types for Profile CRUD ─────────────────────────────────────────────
+export interface StudentProfile {
+  id?: string;
+  userId?: string;
 
-export interface CreateProfileInput {
-  userId: string;
-  dob?: Date | string | null;
+  // Personal
+  dob?: string | null;
   nationality?: string | null;
+
+  // Education
   currentEducation?: string | null;
   institution?: string | null;
   gpa?: string | null;
   graduationYear?: number | null;
+
+  // Target Studies
   targetDegree?: string | null;
   targetUniversities?: string[] | null;
+
+  // Career
   dreamJob?: string | null;
   careerGoals?: string | null;
+
+  // Structured Arrays
   workExperience?: WorkExperienceItem[] | null;
   projects?: ProjectItem[] | null;
   awards?: AwardItem[] | null;
@@ -72,43 +79,22 @@ export interface CreateProfileInput {
   languages?: LanguageItem[] | null;
   skills?: SkillItem[] | null;
   englishTests?: EnglishTestItem[] | null;
+
   additionalNotes?: string | null;
-  academicBackground?: string | null;
-  achievements?: string[] | null;
-  targetCountries?: string[] | null;
-  targetFields?: string[] | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface UpdateProfileInput {
-  dob?: Date | string | null;
-  nationality?: string | null;
-  currentEducation?: string | null;
-  institution?: string | null;
-  gpa?: string | null;
-  graduationYear?: number | null;
-  targetDegree?: string | null;
-  targetUniversities?: string[] | null;
-  dreamJob?: string | null;
-  careerGoals?: string | null;
-  workExperience?: WorkExperienceItem[] | null;
-  projects?: ProjectItem[] | null;
-  awards?: AwardItem[] | null;
-  activities?: ActivityItem[] | null;
-  volunteerWork?: VolunteerItem[] | null;
-  languages?: LanguageItem[] | null;
-  skills?: SkillItem[] | null;
-  englishTests?: EnglishTestItem[] | null;
-  additionalNotes?: string | null;
-  academicBackground?: string | null;
-  achievements?: string[] | null;
-  targetCountries?: string[] | null;
-  targetFields?: string[] | null;
+export interface ProfileCompletionDetails {
+  percentage: number;
+  completedSectionsCount: number;
+  totalSectionsCount: number;
+  completedSections: string[];
+  remainingSections: string[];
+  lastUpdated: string;
 }
 
-export type ProfileWithUser = Profile & {
-  user: {
-    id: string;
-    email: string;
-    fullName: string;
-  };
-};
+export interface ProfileResponse {
+  profile: StudentProfile | null;
+  completion: ProfileCompletionDetails;
+}
