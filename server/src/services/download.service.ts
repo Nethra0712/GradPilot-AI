@@ -2,13 +2,18 @@
  * DownloadService
  *
  * Abstract foundation service to export generated documents.
- * Defines placeholder structures for PDF, DOCX, and TXT binary payloads.
+ * Defines stubs for PDF, DOCX, and fully implements Markdown and TXT file outputs.
  */
 export abstract class DownloadService {
   /**
-   * Generates a text file representation.
+   * Generates a plain text file representation.
    */
   public abstract exportToTxt(content: string): Promise<Buffer>;
+
+  /**
+   * Generates a fully formatted markdown file payload.
+   */
+  public abstract exportToMarkdown(content: string): Promise<Buffer>;
 
   /**
    * Generates a PDF buffer mapping.
@@ -23,6 +28,11 @@ export abstract class DownloadService {
 
 export class MockDownloadService extends DownloadService {
   public async exportToTxt(content: string): Promise<Buffer> {
+    return Buffer.from(content, 'utf-8');
+  }
+
+  public async exportToMarkdown(content: string): Promise<Buffer> {
+    // Return markdown text converted to binary payload
     return Buffer.from(content, 'utf-8');
   }
 

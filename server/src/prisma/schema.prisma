@@ -43,6 +43,18 @@ enum DocumentStatus {
   GENERATING
   COMPLETED
   FAILED
+  REVIEW
+  ARCHIVED
+}
+
+enum ActivityType {
+  CREATED
+  GENERATED
+  EDITED
+  REGENERATED
+  RESTORED
+  FINALIZED
+  ARCHIVED
 }
 
 // ─── MODELS ────────────────────────────────────────────────────────────────────
@@ -62,6 +74,7 @@ model User {
   // Relations
   profile       Profile?
   documents     Document[]
+  folders       Folder[]
   aiGenerations AIGeneration[]
   subscription  Subscription?
   sessions      Session[]
@@ -140,6 +153,14 @@ model Document {
   parent        Document?      @relation("DocumentHistory", fields: [parentId], references: [id], onDelete: Cascade)
   children      Document[]     @relation("DocumentHistory")
 
+  // Sprint 9 additions
+  isPinned      Boolean        @default(false)
+  isFavorite    Boolean        @default(false)
+  tags          String[]
+  folderId      String?        @db.Uuid
+  folder        Folder?        @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  activities    DocumentActivity[]
+
   // Relations
   aiGenerations AIGeneration[]
 
@@ -147,7 +168,34 @@ model Document {
   @@index([userId])
   @@index([documentType])
   @@index([createdAt])
+  @@index([folderId])
   @@map("documents")
+}
+
+model Folder {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @db.Uuid
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  documents Document[]
+
+  @@index([userId])
+  @@map("folders")
+}
+
+model DocumentActivity {
+  id           String       @id @default(uuid()) @db.Uuid
+  documentId   String       @db.Uuid
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  activityType ActivityType
+  metadata     Json?        // Details such as { versionRestored: 2 }
+  createdAt    DateTime     @default(now())
+
+  @@index([documentId])
+  @@index([createdAt])
+  @@map("document_activities")
 }
 
 model AIGeneration {

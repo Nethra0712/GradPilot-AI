@@ -5,6 +5,7 @@ import authRouter from './auth.routes';
 import profileRouter from './profile.routes';
 import aiRouter from './ai.routes';
 import documentRouter from './document.routes';
+import folderRouter from './folder.routes';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use('/auth', authRouter);
 router.use('/profile', profileRouter);
 router.use('/ai', aiRouter);
 router.use('/documents', documentRouter);
+router.use('/folders', folderRouter);
 
 /**
  * GET /api/health

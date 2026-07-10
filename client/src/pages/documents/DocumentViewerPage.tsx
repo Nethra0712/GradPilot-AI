@@ -52,7 +52,12 @@ export const DocumentViewerPage: React.FC = () => {
     minute: '2-digit',
   });
 
-  // Custom parser to map markdown blocks into clean styled elements
+  const handleExportMarkdown = () => {
+    const token = localStorage.getItem('token');
+    const url = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/documents/${doc.id}/export?token=${token || ''}`;
+    window.open(url, '_blank');
+  };
+
   const renderTextAsHtml = (text: string) => {
     if (!text) return null;
     return text.split('\n').map((line, idx) => {
@@ -116,14 +121,17 @@ export const DocumentViewerPage: React.FC = () => {
           </Link>
           <select
             onChange={(e) => {
-              if (e.target.value) {
+              if (e.target.value === 'MD') {
+                handleExportMarkdown();
+              } else if (e.target.value) {
                 alert(`Mock export file downloaded in ${e.target.value} format!`);
-                e.target.value = '';
               }
+              e.target.value = '';
             }}
             className="px-3 h-10 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold transition-all focus:outline-none"
           >
             <option value="">Export file</option>
+            <option value="MD">As Markdown</option>
             <option value="PDF">As PDF</option>
             <option value="DOCX">As Word (DOCX)</option>
             <option value="TXT">As Text (TXT)</option>

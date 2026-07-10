@@ -5,7 +5,8 @@ export type DocumentType =
   | 'RESEARCH_PROPOSAL'
   | 'SCHOLARSHIP_ESSAY'
   | 'EMAIL_PROFESSOR';
-export type DocumentStatus = 'DRAFT' | 'FINAL' | 'PENDING' | 'GENERATING' | 'COMPLETED' | 'FAILED';
+export type DocumentStatus =
+  'DRAFT' | 'FINAL' | 'PENDING' | 'GENERATING' | 'COMPLETED' | 'FAILED' | 'REVIEW' | 'ARCHIVED';
 
 export interface Document {
   id: string;
@@ -25,6 +26,12 @@ export interface Document {
   requestId: string | null;
   parentId: string | null;
   children?: Document[];
+
+  // Sprint 9 extensions
+  isPinned: boolean;
+  isFavorite: boolean;
+  tags: string[];
+  folderId: string | null;
 }
 
 export interface DocumentResponse {
@@ -47,6 +54,7 @@ export interface GenerateSopInput {
   modelOverride?: string;
   title?: string;
   customVariables?: Record<string, unknown>;
+  folderId?: string;
 }
 
 export interface RegenerateSopInput {

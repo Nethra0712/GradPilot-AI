@@ -16,9 +16,16 @@ export const DashboardPage: React.FC = () => {
     { id: 'act-3', text: 'Created MIT PhD Application Academic CV', time: '2 days ago' },
   ];
 
-  // Calculate completion parameters dynamically
   const completion = calculateProfileCompletion(profileData?.profile || null);
   const realDocuments = documentsResponse?.data || [];
+
+  // Filter Categories
+  const pinnedDocs = realDocuments.filter((d) => d.isPinned);
+  const recentDocs = realDocuments.slice(0, 3);
+  const draftDocs = realDocuments.filter((d) => d.status === 'DRAFT' || d.status === 'REVIEW');
+  const completedDocs = realDocuments.filter(
+    (d) => d.status === 'COMPLETED' || d.status === 'FINAL'
+  );
 
   return (
     <div className="space-y-6 select-none animate-fade-in pb-12">
@@ -85,133 +92,93 @@ export const DashboardPage: React.FC = () => {
 
       {/* ─── METRIC STAT CARDS GRID ─── */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Subscription Tier */}
+        {/* Card 1: Pinned Drafts */}
         <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl flex flex-col justify-between">
           <div>
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
-              Active Plan
+              Pinned Items
             </span>
             <span className="text-xl font-bold text-white font-display">
-              {currentUser?.subscriptionPlan || 'FREE'}
+              {pinnedDocs.length} drafts
             </span>
           </div>
-          <div className="mt-4 flex items-center justify-between text-xs">
-            <span className="text-slate-500 font-medium">Status: Active</span>
-            <Link to="#" className="text-brand-400 hover:text-brand-300 font-semibold">
-              Manage Billing
-            </Link>
+          <div className="mt-4 text-[10px] text-slate-500 font-medium">
+            Prioritized workspace items
           </div>
         </div>
 
-        {/* Card 2: AI SOP Credits */}
-        <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
-            AI Generations Used
-          </span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-white font-display">2</span>
-            <span className="text-xs text-slate-500">/ 15 standard drafts</span>
-          </div>
-          {/* Progress bar */}
-          <div className="w-full h-1 bg-slate-950 rounded-full overflow-hidden mt-4">
-            <div className="h-full bg-brand-500 rounded-full w-[13%]" />
-          </div>
-        </div>
-
-        {/* Card 3: Saved Profiles */}
+        {/* Card 2: Avg Generation latency */}
         <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                Student Profile
-              </span>
-              <span className="text-[10px] font-semibold text-slate-400">
-                {completion.percentage}%
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
+              Avg Generation Speed
+            </span>
+            <span className="text-xl font-bold text-white font-display">1.85 seconds</span>
+          </div>
+          <div className="mt-4 text-[10px] text-slate-500 font-medium">
+            Estimated request processing
+          </div>
+        </div>
+
+        {/* Card 3: Draft vs Completed counts */}
+        <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
+              Workflow Statuses
+            </span>
+            <div className="flex justify-between items-baseline mt-1">
+              <span className="text-sm font-bold text-slate-200">{draftDocs.length} Drafts</span>
+              <span className="text-sm font-bold text-brand-400">
+                {completedDocs.length} Completed
               </span>
             </div>
-            <span
-              className={[
-                'text-xl font-bold font-display',
-                completion.percentage === 100 ? 'text-emerald-400' : 'text-amber-400',
-              ].join(' ')}
-            >
-              {completion.percentage === 100 ? 'Ready' : 'Incomplete'}
-            </span>
           </div>
-          <div className="mt-3 text-[10px] text-slate-500 leading-normal">
-            <p>
-              Completed: {completion.completedSectionsCount}/{completion.totalSectionsCount}{' '}
-              sections
-            </p>
-            <p className="mt-0.5">Updated: {completion.lastUpdated}</p>
-          </div>
-          <div className="mt-4 flex items-center justify-between text-xs pt-2 border-t border-slate-900/50">
-            <span className="text-slate-600 text-[10px]">
-              {completion.remainingSections.length} remaining
-            </span>
-            <Link to="/profile" className="text-brand-400 hover:text-brand-300 font-semibold">
-              {completion.percentage === 100 ? 'View Details' : 'Continue Profile'}
-            </Link>
-          </div>
+          <div className="mt-4 text-[10px] text-slate-500 font-medium">Timeline splits</div>
         </div>
 
         {/* Card 4: Total Documents */}
-        <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
-            Saved Documents
-          </span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-bold text-white font-display">
-              {realDocuments.length}
+        <div className="p-5 bg-slate-900/40 border border-slate-900 rounded-2xl flex flex-col justify-between">
+          <div>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
+              Saved Documents
             </span>
-            <span className="text-xs text-slate-500">active drafts</span>
+            <span className="text-xl font-bold text-white font-display">
+              {realDocuments.length} active
+            </span>
           </div>
-          <p className="text-[10px] text-slate-600 mt-4">Soft-deleted items excluded</p>
+          <div className="mt-4 text-[10px] text-slate-500 font-medium">Soft-deleted excluded</div>
         </div>
       </div>
 
-      {/* ─── QUICK ACTIONS & RECENT WORK GRID ─── */}
+      {/* ─── WORKSPACE SECTIONS GRID ─── */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Left 2 Columns: Documents & Quick Actions */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Quick Actions Card */}
-          <div className="p-6 bg-slate-900/40 border border-slate-900 rounded-2xl space-y-4">
-            <h2 className="text-sm font-semibold text-white uppercase tracking-wider font-display">
-              Quick Actions
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <Link
-                to="/documents/sop"
-                className="flex flex-col items-start text-left p-4 rounded-xl border border-slate-900 bg-slate-950/40 hover:border-slate-800 hover:bg-slate-950/80 transition-all select-none group"
-              >
-                <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
-                  Draft Statement of Purpose
-                </span>
-                <span className="text-[11px] text-slate-500 leading-normal mt-1">
-                  Customized for your program
-                </span>
-              </Link>
-
-              {[
-                { title: 'Write Personal Statement', desc: 'Focus on personal history & drive' },
-                { title: 'Build Academic CV', desc: 'Generate standard ATS-friendly CV' },
-                { title: 'AI Essay Reviewer', desc: 'Score and evaluate existing drafts' },
-              ].map((act, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className="flex flex-col items-start text-left p-4 rounded-xl border border-slate-900 bg-slate-950/40 hover:border-slate-800 hover:bg-slate-950/80 transition-all select-none group opacity-50 cursor-not-allowed"
-                >
-                  <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
-                    {act.title}
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-normal mt-1">{act.desc}</span>
-                </button>
-              ))}
+          {/* Section 1: Pinned Documents */}
+          {pinnedDocs.length > 0 && (
+            <div className="p-6 bg-slate-900/40 border border-slate-900 rounded-2xl space-y-4">
+              <h2 className="text-sm font-semibold text-white uppercase tracking-wider font-display">
+                Pinned Documents
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {pinnedDocs.map((doc) => (
+                  <Link
+                    key={doc.id}
+                    to={`/documents/sop?id=${doc.id}`}
+                    className="p-4 rounded-xl border border-slate-900 bg-slate-950/40 hover:border-slate-800 hover:bg-slate-950/80 transition-all block min-w-0"
+                  >
+                    <span className="text-xs font-semibold text-slate-200 truncate block">
+                      📌 {doc.title}
+                    </span>
+                    <span className="text-[10px] text-slate-500 mt-1 block uppercase">
+                      {doc.documentType} &middot; Version {doc.version}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Recent Documents Table List */}
+          {/* Section 2: Recent Documents Table List */}
           <div className="p-6 bg-slate-900/40 border border-slate-900 rounded-2xl space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-white uppercase tracking-wider font-display">
@@ -247,7 +214,7 @@ export const DashboardPage: React.FC = () => {
                   />
                 </svg>
               </div>
-            ) : realDocuments.length === 0 ? (
+            ) : recentDocs.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-sm text-slate-500">No documents created yet.</p>
                 <Link
@@ -259,7 +226,7 @@ export const DashboardPage: React.FC = () => {
               </div>
             ) : (
               <div className="divide-y divide-slate-900/50">
-                {realDocuments.slice(0, 3).map((doc) => (
+                {recentDocs.map((doc) => (
                   <div
                     key={doc.id}
                     className="py-3 flex items-center justify-between text-sm group"
@@ -284,7 +251,7 @@ export const DashboardPage: React.FC = () => {
                       <span
                         className={[
                           'text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border',
-                          doc.status === 'COMPLETED'
+                          doc.status === 'COMPLETED' || doc.status === 'FINAL'
                             ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                             : 'bg-amber-500/10 border-amber-500/20 text-amber-400 animate-pulse',
                         ].join(' ')}
@@ -292,10 +259,10 @@ export const DashboardPage: React.FC = () => {
                         {doc.status}
                       </span>
                       <Link
-                        to={`/documents/${doc.id}`}
-                        className="text-xs text-brand-400 hover:text-brand-300 p-1"
+                        to={`/documents/sop?id=${doc.id}`}
+                        className="text-xs text-brand-400 hover:text-brand-300 p-1 font-bold"
                       >
-                        View
+                        Open Workspace
                       </Link>
                     </div>
                   </div>
