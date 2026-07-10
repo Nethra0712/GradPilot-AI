@@ -4,12 +4,14 @@ import { logger } from '../utils/logger';
 import authRouter from './auth.routes';
 import profileRouter from './profile.routes';
 import aiRouter from './ai.routes';
+import documentRouter from './document.routes';
 
 const router = Router();
 
 router.use('/auth', authRouter);
 router.use('/profile', profileRouter);
 router.use('/ai', aiRouter);
+router.use('/documents', documentRouter);
 
 /**
  * GET /api/health

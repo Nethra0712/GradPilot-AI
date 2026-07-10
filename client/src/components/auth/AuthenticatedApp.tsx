@@ -6,6 +6,8 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import DashboardPage from '@/pages/dashboard/DashboardPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import DocumentsPage from '@/pages/documents/DocumentsPage';
+import SOPGeneratorPage from '@/pages/documents/SOPGeneratorPage';
+import DocumentViewerPage from '@/pages/documents/DocumentViewerPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 
 /**
@@ -34,6 +36,8 @@ export const AuthenticatedApp: React.FC = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/documents" element={<DocumentsPage />} />
+        <Route path="/documents/sop" element={<SOPGeneratorPage />} />
+        <Route path="/documents/:id" element={<DocumentViewerPage />} />
         <Route path="/settings" element={<SettingsPage />} />
 
         {/* Fallback to NotFound route */}

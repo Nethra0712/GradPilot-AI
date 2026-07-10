@@ -37,17 +37,18 @@ export class ProfileRepository {
         gpa: data.gpa || null,
         graduationYear: data.graduationYear || null,
         targetDegree: data.targetDegree || null,
-        targetUniversities: data.targetUniversities || null,
+        targetUniversities:
+          (data.targetUniversities as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
         dreamJob: data.dreamJob || null,
         careerGoals: data.careerGoals || null,
-        workExperience: data.workExperience || null,
-        projects: data.projects || null,
-        awards: data.awards || null,
-        activities: data.activities || null,
-        volunteerWork: data.volunteerWork || null,
-        languages: data.languages || null,
-        skills: data.skills || null,
-        englishTests: data.englishTests || null,
+        workExperience: (data.workExperience as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        projects: (data.projects as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        awards: (data.awards as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        activities: (data.activities as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        volunteerWork: (data.volunteerWork as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        languages: (data.languages as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        skills: (data.skills as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
+        englishTests: (data.englishTests as unknown as Prisma.InputJsonValue) || Prisma.DbNull,
         additionalNotes: data.additionalNotes || null,
       },
     });
@@ -57,7 +58,7 @@ export class ProfileRepository {
    * Update an existing profile.
    */
   async update(userId: string, data: UpdateProfileInput): Promise<Profile> {
-    const updateData: Prisma.ProfileUpdateInput = { ...data } as Prisma.ProfileUpdateInput;
+    const updateData = { ...data } as unknown as Prisma.ProfileUpdateInput;
 
     // Parse Dates if present
     if (data.dob) {
@@ -77,18 +78,22 @@ export class ProfileRepository {
     const { userId, ...profileFields } = data;
     const dobValue = profileFields.dob ? new Date(profileFields.dob) : null;
 
+    const updateFields = {
+      ...profileFields,
+      dob: dobValue,
+      deletedAt: null,
+    } as unknown as Prisma.ProfileUpdateInput;
+
+    const createFields = {
+      userId,
+      ...profileFields,
+      dob: dobValue,
+    } as unknown as Prisma.ProfileCreateInput;
+
     return prisma.profile.upsert({
       where: { userId },
-      update: {
-        ...profileFields,
-        dob: dobValue,
-        deletedAt: null, // restore if it was previously soft-deleted
-      },
-      create: {
-        userId,
-        ...profileFields,
-        dob: dobValue,
-      },
+      update: updateFields,
+      create: createFields,
     });
   }
 

@@ -39,6 +39,10 @@ enum DocumentType {
 enum DocumentStatus {
   DRAFT
   FINAL
+  PENDING
+  GENERATING
+  COMPLETED
+  FAILED
 }
 
 // ─── MODELS ────────────────────────────────────────────────────────────────────
@@ -113,15 +117,28 @@ model Profile {
 }
 
 model Document {
-  id           String         @id @default(uuid()) @db.Uuid
-  userId       String         @db.Uuid
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documentType DocumentType
-  status       DocumentStatus @default(DRAFT)
-  content      Json? // Structured section-based document content
-  deletedAt    DateTime? // Soft delete support
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id            String         @id @default(uuid()) @db.Uuid
+  userId        String         @db.Uuid
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentType  DocumentType
+  status        DocumentStatus @default(DRAFT)
+  content       Json? // Structured section-based document content
+  deletedAt     DateTime? // Soft delete support
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  title         String         @default("Untitled Document")
+  version       Int            @default(1)
+  generatedBy   String?        @default("AI")
+  promptVersion String?
+  provider      String?
+  model         String?
+  requestId     String?
+
+  // Self relation for version history
+  parentId      String?        @db.Uuid
+  parent        Document?      @relation("DocumentHistory", fields: [parentId], references: [id], onDelete: Cascade)
+  children      Document[]     @relation("DocumentHistory")
 
   // Relations
   aiGenerations AIGeneration[]

@@ -1,70 +1,98 @@
-import { Document } from '@prisma/client';
-import { CreateDocumentInput, DocumentFilters, UpdateDocumentInput } from '@/types/document.types';
+import prisma from '@/prisma/client';
+import { Document, DocumentType, DocumentStatus, Prisma } from '@prisma/client';
 
 /**
  * DocumentRepository
  *
  * Data-access layer for the Document model.
- * Implements soft-delete semantics: deleted documents have a non-null `deletedAt`
- * and are excluded from all standard list queries by default.
- * Hard deletes are never performed on documents to preserve audit history.
+ * Excludes soft-deleted records (deletedAt !== null) from general lookups.
  */
 export class DocumentRepository {
   /**
-   * Find a single document by its ID.
-   * Throws if the document is soft-deleted and includeDeleted is not true.
+   * Creates a new document record.
    */
-  async findById(_id: string, _includeDeleted?: boolean): Promise<Document | null> {
-    throw new Error('Not implemented');
+  public async create(data: {
+    userId: string;
+    title: string;
+    documentType: DocumentType;
+    status: DocumentStatus;
+    content?: Prisma.InputJsonValue;
+    version?: number;
+    parentId?: string;
+    promptVersion?: string;
+    provider?: string;
+    model?: string;
+    requestId?: string;
+    generatedBy?: string;
+  }): Promise<Document> {
+    return prisma.document.create({
+      data,
+    });
   }
 
   /**
-   * List all documents matching the given filters.
-   * Excludes soft-deleted documents by default (includeDeleted: false).
-   * Supports filtering by documentType and status.
+   * Updates an existing document record.
    */
-  async findMany(_filters: DocumentFilters): Promise<Document[]> {
-    throw new Error('Not implemented');
+  public async update(id: string, data: Prisma.DocumentUpdateInput): Promise<Document> {
+    return prisma.document.update({
+      where: { id },
+      data,
+    });
   }
 
   /**
-   * Create a new document record.
-   * Called when the user begins a new application document.
+   * Finds a document by its ID (if not soft-deleted).
    */
-  async create(_data: CreateDocumentInput): Promise<Document> {
-    throw new Error('Not implemented');
+  public async findById(id: string): Promise<(Document & { children?: Document[] }) | null> {
+    return prisma.document.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        children: {
+          where: { deletedAt: null },
+          orderBy: { version: 'asc' },
+        },
+      },
+    }) as Promise<(Document & { children?: Document[] }) | null>;
   }
 
   /**
-   * Update the content or status of a document.
-   * Called when the user edits their document or finalises it.
+   * Lists all primary documents for a user (parentId is null, and not soft-deleted).
+   * Sorted by updated time.
    */
-  async update(_id: string, _data: UpdateDocumentInput): Promise<Document> {
-    throw new Error('Not implemented');
+  public async findByUserId(userId: string): Promise<Document[]> {
+    return prisma.document.findMany({
+      where: {
+        userId,
+        parentId: null,
+        deletedAt: null,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
   }
 
   /**
-   * Soft-delete a document by setting `deletedAt` to the current timestamp.
-   * The document remains in the database and can be recovered.
+   * Soft-deletes a document. If it is a parent document, also soft-deletes its history (children).
    */
-  async softDelete(_id: string): Promise<Document> {
-    throw new Error('Not implemented');
-  }
+  public async softDelete(id: string): Promise<Document> {
+    const now = new Date();
 
-  /**
-   * Restore a soft-deleted document by clearing the `deletedAt` field.
-   */
-  async restore(_id: string): Promise<Document> {
-    throw new Error('Not implemented');
-  }
+    // Soft delete child history versions as well
+    await prisma.document.updateMany({
+      where: { parentId: id },
+      data: { deletedAt: now },
+    });
 
-  /**
-   * Count non-deleted documents belonging to a user.
-   * Used for quota enforcement (e.g. Free tier limits active applications).
-   */
-  async countByUserId(_userId: string): Promise<number> {
-    throw new Error('Not implemented');
+    return prisma.document.update({
+      where: { id },
+      data: { deletedAt: now },
+    });
   }
 }
 
 export const documentRepository = new DocumentRepository();
+export default documentRepository;
